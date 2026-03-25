@@ -11,9 +11,7 @@ static float   pressureHistory[PRESSURE_HISTORY];
 static uint8_t pressureIdx  = 0;
 static bool    pressureFull = false;
 
-// ====================================================================
 //  INIT
-// ====================================================================
 void sensors_init() {
     dht.begin();
 
@@ -24,9 +22,7 @@ void sensors_init() {
     memset(pressureHistory, 0, sizeof(pressureHistory));
 }
 
-// ====================================================================
 //  PRESSURE TREND — ring buffer
-// ====================================================================
 static bool updatePressureTrend(float hPa) {
     pressureHistory[pressureIdx] = hPa;
     pressureIdx = (pressureIdx + 1) % PRESSURE_HISTORY;
@@ -40,9 +36,7 @@ static bool updatePressureTrend(float hPa) {
     return false;
 }
 
-// ====================================================================
 //  READ ALL SENSORS
-// ====================================================================
 void sensors_read(WeatherData &data) {
     // --- DHT11 ---
     float h = dht.readHumidity();
@@ -70,9 +64,7 @@ void sensors_read(WeatherData &data) {
     data.thresholdExceeded = (data.tempF > data.thresholdF);
 }
 
-// ====================================================================
 //  SERIAL DEBUG OUTPUT
-// ====================================================================
 void sensors_print(const WeatherData &data) {
     if (data.thresholdExceeded) {
         Serial.printf("[ALERT] Temp %.1fF exceeds threshold %.1fF!\n",

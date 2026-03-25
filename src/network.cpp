@@ -5,9 +5,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 
-// ====================================================================
 //  WIFI CONNECTION
-// ====================================================================
 void wifi_connect() {
     Serial.printf("[INFO] Connecting to WiFi: %s\n", WIFI_SSID);
     WiFi.begin(WIFI_SSID, WIFI_PASS);
@@ -19,9 +17,7 @@ void wifi_connect() {
                   WiFi.localIP().toString().c_str());
 }
 
-// ====================================================================
 //  HTTPS POST
-// ====================================================================
 void http_post(const WeatherData &data) {
     if (WiFi.status() != WL_CONNECTED) {
         Serial.println("[WARN] WiFi not connected — skipping POST.");
