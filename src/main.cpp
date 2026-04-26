@@ -23,11 +23,6 @@
  *    3.3V → [Photoresistor] → GPIO34 → [10kΩ] → GND
  *    (Brighter light → higher ADC reading)
  *
- *  Potentiometer (high-temp alert threshold):
- *    Left  pin → GND
- *    Wiper pin → GPIO35
- *    Right pin → 3.3V
- *    (Wiper voltage linearly maps to 50–100 °F alert threshold)
  * ============================================================
  */
 
