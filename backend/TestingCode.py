@@ -16,8 +16,7 @@ payload = {
 }
 
 headers = {
-    "Content-Type": "application/json",
-    "x-api-key": API_KEY
+    "Content-Type": "application/json"
 }
 
 response = requests.post(URL, json=payload, headers=headers)
