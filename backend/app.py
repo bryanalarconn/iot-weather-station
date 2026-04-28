@@ -14,9 +14,9 @@ REQUIRED_FIELDS = {
     "pressure_hpa": float,
     "heat_index_f": float,
     "light_pct": int,
-    "rain_likely": bool,
-    "alert_threshold_f": float,
-    "threshold_exceeded": bool
+    "rain_likely": bool
+    #"alert_threshold_f": float,
+    #"threshold_exceeded": bool
 }
 
 if not firebase_admin._apps:
