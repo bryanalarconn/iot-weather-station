@@ -5,7 +5,7 @@
 #define WIFI_PASS   "Your_PASSWORD"
 
 //  HTTP ENDPOINT  
-#define POST_URL    "https://your-server.example.com/weather"
+#define POST_URL    "https://esp32-api-473950836517.us-west1.run.app/data"
 
 //  GPIO PINS
 #define DHT_PIN     4       // DHT11 data line
