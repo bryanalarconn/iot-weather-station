@@ -35,7 +35,7 @@ final class WeatherViewModel: ObservableObject {
     // ─── CONFIGURE THIS ────────────────────────────────────────────────────────
     // Your Cloud Run endpoint that returns the latest reading as JSON.
     // e.g. "https://your-cloud-run-service.run.app/latest"
-    private let latestEndpoint = "https://YOUR_CLOUD_RUN_URL/latest"
+    private let latestEndpoint = "https://esp32-api-473950836517.us-west1.run.app/latest"
     // ───────────────────────────────────────────────────────────────────────────
 
     // MARK: - Init
@@ -45,7 +45,7 @@ final class WeatherViewModel: ObservableObject {
 
     // MARK: - Polling (every 3 s to match prototype cadence)
     func startPolling() {
-        timer = Timer.publish(every: 3, on: .main, in: .common)
+        timer = Timer.publish(every: 30, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 Task { await self?.fetchLatest() }
