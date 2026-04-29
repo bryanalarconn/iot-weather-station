@@ -29,18 +29,7 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
         // ── Load preview data in simulator / preview
         .onAppear {
-            #if DEBUG
-            // Seed with simulated data so the UI looks alive immediately.
-            // Remove this block once your Cloud Run endpoint is live.
-            let seed = WeatherViewModel.simulated()
-            vm.applyReading(seed)
-            // Keep seeding every 3s to simulate live sensor data
-            Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { _ in
-                Task { @MainActor in
-                    vm.applyReading(WeatherViewModel.simulated())
-                }
-            }
-            #endif
+            vm.startPolling()
         }
     }
 }
