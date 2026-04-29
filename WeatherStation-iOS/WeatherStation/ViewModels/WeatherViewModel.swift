@@ -75,8 +75,6 @@ final class WeatherViewModel: ObservableObject {
 
     // MARK: - Apply a new reading
     func applyReading(_ reading: WeatherReading) {
-        // Threshold from potentiometer comes from the ESP32 payload
-        thresholdF = reading.alert_threshold_f
 
         current = reading
         lastUpdated = Date()
@@ -92,7 +90,7 @@ final class WeatherViewModel: ObservableObject {
 
     // MARK: - Alert checking
     private func checkAlerts(_ reading: WeatherReading) {
-        if reading.threshold_exceeded {
+        if reading.temp_f > thresholdF {
             let event = AlertEvent(type: .overTemp, tempF: reading.temp_f, timestamp: Date())
             alertEvents.insert(event, at: 0)
         }
@@ -139,9 +137,7 @@ final class WeatherViewModel: ObservableObject {
             pressure_hpa: Double.random(in: 1008...1022),
             heat_index_f: Double.random(in: 62...98),
             light_pct: Double.random(in: 30...95),
-            rain_likely: Bool.random(),
-            alert_threshold_f: 85.0,
-            threshold_exceeded: false
+            rain_likely: Bool.random()
         )
     }
 }

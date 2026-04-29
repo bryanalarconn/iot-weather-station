@@ -3,7 +3,7 @@ import SwiftUI
 
 // MARK: - Core model matching ESP32 JSON payload exactly
 // Fields: temp_f, temp_c, humidity, pressure_hpa, heat_index_f,
-//         light_pct, rain_likely, alert_threshold_f, threshold_exceeded
+//         light_pct, rain_likely
 
 struct WeatherReading: Codable, Identifiable {
     var id = UUID()
@@ -14,14 +14,11 @@ struct WeatherReading: Codable, Identifiable {
     let heat_index_f: Double
     let light_pct: Double
     let rain_likely: Bool
-    let alert_threshold_f: Double
-    let threshold_exceeded: Bool
     var timestamp: Date = Date()
 
     enum CodingKeys: String, CodingKey {
         case temp_f, temp_c, humidity, pressure_hpa
         case heat_index_f, light_pct, rain_likely
-        case alert_threshold_f, threshold_exceeded
     }
 }
 
