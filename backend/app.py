@@ -95,6 +95,21 @@ def is_rate_limited(identifier, limit_seconds=5):
         print("Rate limit error:", e)
         return False 
 
+@app.route("/latest", methods=["GET"])
+def get_latest():
+    try:
+        docs = db.collection("sensor_data") \
+                  .order_by("timestamp", direction=firestore.Query.DESCENDING) \
+                  .limit(1) \
+                  .stream()
+        for doc in docs:
+            data = doc.to_dict()
+            data.pop("timestamp", None)
+            return jsonify(data), 200
+        return jsonify({"error": "No data found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route("/")
 def health():
     return "OK", 200
