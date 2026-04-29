@@ -115,10 +115,10 @@ struct NowView: View {
                                 Text("Threshold")
                                     .font(WT.body(10))
                                     .foregroundStyle(WT.textMuted)
-                                Text(String(format: "%.0f°F", reading.alert_threshold_f))
+                                Text(String(format: "%.0f°F", vm.thresholdF))
                                     .font(WT.body(18, weight: .semibold))
                                     .foregroundStyle(WT.textPrimary)
-                                AlertChip(exceeded: reading.threshold_exceeded)
+                                AlertChip(exceeded: reading.temp_f > vm.thresholdF)
                             }
                         }
                     }
