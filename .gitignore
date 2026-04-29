@@ -1,5 +1,5 @@
 .pio
 .vscode
 .DS_Store
-include/config.h
 
+firmware/include/config.h
