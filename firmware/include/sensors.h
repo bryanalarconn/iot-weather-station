@@ -10,8 +10,6 @@ struct WeatherData {
     float heatIndexF;
     int   lightPct;
     bool  rainLikely;
-    bool  thresholdExceeded;
-    float thresholdF;
 };
 
 void sensors_init();

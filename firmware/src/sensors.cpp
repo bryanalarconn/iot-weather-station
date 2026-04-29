@@ -57,20 +57,10 @@ void sensors_read(WeatherData &data) {
     // --- Photoresistor ---
     data.lightPct = (int)map(analogRead(PHOTO_PIN), 0, 4095, 0, 100);
 
-    // --- Potentiometer threshold check ---
-    int raw = analogRead(POT_PIN);
-    data.thresholdF = POT_TEMP_MIN_F +
-                      ((float)raw / 4095.0f) * (POT_TEMP_MAX_F - POT_TEMP_MIN_F);
-    data.thresholdExceeded = (data.tempF > data.thresholdF);
 }
 
 //  SERIAL DEBUG OUTPUT
 void sensors_print(const WeatherData &data) {
-    if (data.thresholdExceeded) {
-        Serial.printf("[ALERT] Temp %.1fF exceeds threshold %.1fF!\n",
-                      data.tempF, data.thresholdF);
-    }
-
     Serial.printf("[Sensors] %.1fF / %.1fC  Hum:%.1f%%  "
                   "Pres:%.1f hPa  Light:%d%%  HI:%.1fF  Rain:%s\n",
                   data.tempF, data.tempC, data.humidity, data.pressureHPa,

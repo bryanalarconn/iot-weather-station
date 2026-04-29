@@ -33,8 +33,6 @@ void http_post(const WeatherData &data) {
     doc["heat_index_f"]       = serialized(String(data.heatIndexF, 1));
     doc["light_pct"]          = data.lightPct;
     doc["rain_likely"]        = data.rainLikely;
-    doc["alert_threshold_f"]  = serialized(String(data.thresholdF, 1));
-    doc["threshold_exceeded"] = data.thresholdExceeded;
 
     // Pretty-print to serial for readability
     String prettyPayload;
