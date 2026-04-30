@@ -113,7 +113,7 @@ struct SettingsView: View {
                         Divider().background(Color.white.opacity(0.06))
                         SettingRow(label: "Firestore",    value: "us-west1 · Native mode")
                         Divider().background(Color.white.opacity(0.06))
-                        SettingRow(label: "API endpoint", value: "esp32-api-4739...us-west1.run.app)
+                        SettingRow(label: "API endpoint", value: "esp32-api-4739...us-west1.run.app")
                         Divider().background(Color.white.opacity(0.06))
                         SettingRow(label: "Auth token",   value: "Rate limited · API key set")
                     }
