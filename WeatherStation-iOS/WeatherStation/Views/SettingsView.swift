@@ -107,15 +107,15 @@ struct SettingsView: View {
                     SettingGroup(title: "Cloud") {
                         SettingRow(
                             label: "Google Cloud Run",
-                            value: "Pending setup",
+                            value: "Active",
                             valueColor: WT.accent.opacity(0.7)
                         )
                         Divider().background(Color.white.opacity(0.06))
-                        SettingRow(label: "Firestore",    value: "Not configured")
+                        SettingRow(label: "Firestore",    value: "us-west1 · Native mode")
                         Divider().background(Color.white.opacity(0.06))
-                        SettingRow(label: "API endpoint", value: "Not configured")
+                        SettingRow(label: "API endpoint", value: "esp32-api-4739...us-west1.run.app)
                         Divider().background(Color.white.opacity(0.06))
-                        SettingRow(label: "Auth token",   value: "Not set")
+                        SettingRow(label: "Auth token",   value: "Rate limited · API key set")
                     }
                     .padding(.bottom, 10)
 

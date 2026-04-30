@@ -34,7 +34,7 @@ struct HistoryView: View {
                             Text("History")
                                 .font(WT.display(28, weight: .bold))
                                 .foregroundStyle(WT.textPrimary)
-                            Text("Last \(vm.history.count) readings · 3 seconds")
+                            Text("Last \(vm.history.count) readings · 30 seconds")
                                 .font(WT.body(11))
                                 .foregroundStyle(Color.white.opacity(0.3))
                         }

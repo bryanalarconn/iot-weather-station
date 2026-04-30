@@ -81,7 +81,7 @@ struct AlertsView: View {
                                 )
                             )
 
-                        Text("Reflects potentiometer reading from ESP32")
+                        Text("Set your custom alert threshold")
                             .font(WT.body(10))
                             .foregroundStyle(Color.white.opacity(0.2))
                     }
