@@ -1,6 +1,6 @@
 # IoT Weather Station
 
-An ESP32-based weather monitoring station that reads temperature, humidity, barometric pressure, and light level — then posts the data to a remote server over HTTPS.
+An ESP32-based weather monitoring station that reads temperature, humidity, barometric pressure, and light level — then posts the data to a Flask backend hosted on Google Cloud Run, where it is stored in Firestore.
 
 ---
 
@@ -12,7 +12,6 @@ An ESP32-based weather monitoring station that reads temperature, humidity, baro
 | DHT11 | Temperature & humidity |
 | BMP180 | Barometric pressure |
 | Photoresistor | Light level |
-| Potentiometer | High-temperature alert threshold |
 
 ---
 
@@ -43,56 +42,73 @@ An ESP32-based weather monitoring station that reads temperature, humidity, baro
 ```
 Higher light = higher ADC reading = higher light percentage.
 
-### Potentiometer (Alert Threshold)
-| Pot Pin | ESP32 Pin |
-|---|---|
-| Left | GND |
-| Wiper | GPIO 35 |
-| Right | 3.3V |
-
-Turning the pot adjusts the high-temperature alert threshold between 50°F and 100°F.
-
 ---
 
 ## Setup
 
-### 1. Install PlatformIO
+### Firmware
+
+#### 1. Install PlatformIO
 Install the [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode) for VS Code, or use the PlatformIO CLI.
 
-### 2. Configure credentials
-Open `include/config.h` and fill in your details:
+#### 2. Configure credentials
+Open `firmware/include/config.h` and fill in your details:
 
 ```cpp
 #define WIFI_SSID   "your_wifi_name"
 #define WIFI_PASS   "your_wifi_password"
-#define POST_URL    "https://your-server.com/weather"
+#define POST_URL    "https://your-backend.run.app/data"
 ```
 
-### 3. Build and flash
+#### 3. Build and flash
 ```bash
 pio run --target upload
 ```
 
-### 4. Monitor serial output
+#### 4. Monitor serial output
 ```bash
 pio device monitor --baud 115200
 ```
+
+### Backend
+
+The backend is a Flask app containerized with Docker and deployed to Google Cloud Run, with Firestore as the database.
+
+#### Local development
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py
+```
+
+#### Deploy to Cloud Run
+```bash
+gcloud run deploy --source backend/
+```
+
+> The service account running the container must have Firestore read/write permissions.
 
 ---
 
 ## How It Works
 
-Every **5 seconds** the ESP32:
+Every **30 seconds** the ESP32:
 1. Reads all sensors
 2. Prints a summary line to the serial monitor
-3. Fires an alert if the temperature exceeds the pot threshold
-4. POSTs a JSON payload to your server over HTTPS
+3. POSTs a JSON payload to the backend over HTTPS
+
+The backend validates the payload, enforces a **30-second rate limit** per device (by `device_id` or IP), and writes the reading to the `sensor_data` Firestore collection.
 
 ### Example serial output
 ```
 [Sensors] 76.3F / 24.6C  Hum:58.2%  Pres:1014.5 hPa  Light:63%  HI:76.3F  Rain:no
-[HTTP] POST https://your-server.com/weather
-[HTTP] Payload:
+[HTTP] POST https://your-backend.run.app/data
+[HTTP] Response: 200
+```
+
+### JSON payload
+
+```json
 {
   "temp_f": 76.3,
   "temp_c": 24.6,
@@ -100,11 +116,8 @@ Every **5 seconds** the ESP32:
   "pressure_hpa": 1014.5,
   "heat_index_f": 76.3,
   "light_pct": 63,
-  "rain_likely": false,
-  "alert_threshold_f": 85.0,
-  "threshold_exceeded": false
+  "rain_likely": false
 }
-[HTTP] Response: 200
 ```
 
 ### JSON fields explained
@@ -117,30 +130,50 @@ Every **5 seconds** the ESP32:
 | `heat_index_f` | Feels-like temperature (NOAA formula, factors in humidity) |
 | `light_pct` | Light level 0–100% |
 | `rain_likely` | `true` if pressure dropped more than 2 hPa over the last 10 readings |
-| `alert_threshold_f` | Current pot threshold in °F (range: 50–100°F) |
-| `threshold_exceeded` | `true` if temp is above the pot threshold |
+
+---
+
+## API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/data` | Ingest a sensor reading |
+| `GET` | `/latest` | Return the most recent reading |
+| `GET` | `/` | Health check |
 
 ---
 
 ## Configuration Reference
 
-All tunable settings live in `include/config.h`.
+All tunable firmware settings live in `firmware/include/config.h`.
 
 | Constant | Default | Description |
 |---|---|---|
 | `READ_INTERVAL_MS` | 5000 | How often sensors are sampled (milliseconds) |
 | `PRESSURE_HISTORY` | 10 | Number of pressure readings tracked for rain prediction |
 | `RAIN_DROP_HPA` | 2.0 | Pressure drop (hPa) that triggers `rain_likely = true` |
-| `POT_TEMP_MIN_F` | 50.0 | Alert threshold when pot is at minimum |
-| `POT_TEMP_MAX_F` | 100.0 | Alert threshold when pot is at maximum |
+
+---
+
+## iOS App
+
+A native SwiftUI app lives in `WeatherStation-iOS/`. It connects to the backend's `/latest` endpoint to display the most recent sensor reading.
 
 ---
 
 ## Libraries
 
+### Firmware
 | Library | Purpose |
 |---|---|
 | Adafruit DHT Sensor Library | DHT11 temperature & humidity |
 | Adafruit BMP085 Library | BMP180 barometric pressure |
 | Adafruit Unified Sensor | Shared sensor abstraction |
 | ArduinoJson | JSON serialization |
+
+### Backend
+| Package | Purpose |
+|---|---|
+| Flask | HTTP server |
+| gunicorn | Production WSGI server |
+| firebase-admin | Firestore client |
